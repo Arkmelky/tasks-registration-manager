@@ -1,0 +1,37 @@
+﻿@model DataAccess.Models.Person
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Add New Person</h2>
+
+@using (Html.BeginForm("Create","Person",FormMethod.Post)){
+    
+    <div>
+    <div class="form-group" style="display: none">
+        <label for="PersonId">PersonId:</label>
+        <input name="PersonId" type="text" class="form-control" id="PersonId">
+    </div>
+    <div class="form-group">
+        <label for="FirstName">First name:</label>
+        <input name="FirstName" type="text" class="form-control" id="FirstName">
+    </div>
+    <div class="form-group">
+        <label for="LastName">Last Name:</label>
+        <input name="LastName" type="text" class="form-control" id="LastName">
+    </div>
+    <div class="form-group">
+        <label for="MiddleName">Middle Name:</label>
+        <input name="MiddleName" type="text" class="form-control" id="MiddleName">
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+</div>
+
+}
+<div class="btn  left">
+    <div>@Html.ActionLink("Back","Index","Person")</div>
+</div>
+
+

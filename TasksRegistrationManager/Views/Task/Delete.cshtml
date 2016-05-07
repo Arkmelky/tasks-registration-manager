@@ -1,0 +1,48 @@
+﻿@using DataAccess.Models
+@model TasksRegistrationManager.Models.TaskView
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+@using (Html.BeginForm("Delete", "Task"))
+{
+    <div>
+        <div class="form-group" style="display: none">
+            <label for="TaskId">TaskId:</label>
+            <input value="@Model.TaskId" name="TaskId" type="text" class="form-control" id="TaskId" readonly="">
+        </div>
+        <div class="form-group">
+            <label for="Name">Name:</label>
+            <input value="@Model.Name" name="Name" type="text" class="form-control" id="Name" readonly>
+        </div>
+        <div class="form-group">
+            <label for="Workload">Workload:</label>
+            <input value="@Model.Workload" name="Workload" type="text" class="form-control" id="Workload" readonly>
+        </div>
+        <div class="form-group">
+            <label for="StartDate">StartDate:</label>
+            <input value="@Model.StartDate" name="StartDate" type="" class="form-control" id="StartDate" readonly>
+        </div>
+        <div class="form-group">
+            <label for="EndDate">EndDate:</label>
+            <input value="@Model.EndDate" name="EndDate" type="" class="form-control" id="EndDate" readonly>
+        </div>
+        
+        <div class="form-group">
+            <label for="State">State:</label>
+            <input value="@Model.State.Name" name="State" type="" class="form-control" id="State" readonly>
+        </div>
+        <<div class="form-group">
+            <label for="Person">Person:</label>
+            <input value="@Model.Person.PersonId" name="EndDate" type="" class="form-control" id="Person" readonly>
+        </div>
+
+        <button type="submit" class="btn btn-default">Submit</button>
+    </div>
+}
+<div class="btn  left">
+    <div>@Html.ActionLink("Back","Index","Person")</div>
+</div>

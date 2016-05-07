@@ -1,0 +1,6 @@
+G:\OOP\Training\TasksRegistrationManager\DataAccess\bin\Release\DataAccess.dll.config
+G:\OOP\Training\TasksRegistrationManager\DataAccess\bin\Release\DataAccess.dll
+G:\OOP\Training\TasksRegistrationManager\DataAccess\bin\Release\DataAccess.pdb
+G:\OOP\Training\TasksRegistrationManager\DataAccess\obj\Release\DataAccess.dll
+G:\OOP\Training\TasksRegistrationManager\DataAccess\obj\Release\DataAccess.pdb
+G:\OOP\Training\TasksRegistrationManager\DataAccess\obj\Release\DataAccess.csprojResolveAssemblyReference.cache

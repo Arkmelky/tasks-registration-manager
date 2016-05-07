@@ -1,0 +1,34 @@
+﻿@model DataAccess.Models.Person
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+@using (@Html.BeginForm("Delete", "Person", null, FormMethod.Post))
+{
+    <div>
+    <div class="form-group" style="display: none;">
+        <label for="PersonId">PersonId:</label>
+        <input value="@Model.PersonId" name="PersonId" type="text" class="form-control" id="PersonId" readonly>
+    </div>
+    <div class="form-group">
+        <label for="FirstName">First name:</label>
+        <input value="@Model.FirstName" name="FirstName" type="text" class="form-control" id="FirstName" readonly>
+    </div>
+    <div class="form-group">
+        <label for="LastName">Last Name:</label>
+        <input value="@Model.LastName" name="LastName" type="text" class="form-control" id="LastName" readonly>
+    </div>
+    <div class="form-group">
+        <label for="MiddleName">Middle Name:</label>
+        <input value="@Model.MiddleName" name="MiddleName" type="text" class="form-control" id="MiddleName" readonly>
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+</div>
+}
+<div class="btn  left">
+    <div>@Html.ActionLink("Back","Index","Person")</div>
+</div>

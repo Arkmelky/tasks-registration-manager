@@ -1,0 +1,67 @@
+﻿@model List<TasksRegistrationManager.Models.TaskView>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+<h4>Create new:</h4>
+<div>
+    @Html.ActionLink("Create","Create","Task", new{ @class="btn btn-default"})
+</div>
+<div class="list-group">
+    
+    @{
+    
+    foreach(var item in @Model)
+     {
+        
+        
+        <div class="form-horizontal item list-group-item" style="max-width: 400px;">
+        <div style="display:none;">
+            <label>Id</label>
+            <div>@item.TaskId</div>
+        </div>
+        <div>
+            <label>Name</label>
+            <div>@item.Name</div>
+        </div>
+        <div>
+            <label>Workload</label>
+            <div>@item.Workload</div>
+        </div>
+        <div>
+            <label>StartDate</label>
+            <div>@item.StartDate</div>
+        </div>
+        <div>
+            <label>EndDate</label>
+            <div>@item.EndDate</div>
+        </div>
+        <div>
+            <label>State</label>
+            <div>@item.State.Name</div>
+        </div>
+        <div>
+            <label>Person</label>
+            <div>@item.Person.FirstName @item.Person.LastName</div>
+        </div>
+        
+        <div class="btn-group">
+            <div class="col-md-6 btn btn-default">
+                @Html.ActionLink("Update","Update","Task",new {id = @item.TaskId}, new{ @class=""})
+            </div>
+            <div class="col-md-6 btn btn-default">
+                @Html.ActionLink("Delete","Delete","Task",new {id = @item.TaskId}, new{ @class=""})
+            </div>
+        </div>
+        
+       
+
+    </div>
+     }
+
+}
+    
+
+</div>

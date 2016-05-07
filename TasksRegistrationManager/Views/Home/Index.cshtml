@@ -1,0 +1,17 @@
+﻿@model List<DataAccess.Models.Task>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+
+@foreach(var item in @Model){
+    <div>ID : @item.TaskId</div>
+    <div>Name: @item.Name</div>
+    <div>Name: @item.StartDate</div>
+    <div>Name: @item.Workload</div>
+    
+}

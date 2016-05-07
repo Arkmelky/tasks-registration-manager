@@ -1,0 +1,51 @@
+﻿@model List<DataAccess.Models.Person>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<h4>Create new:</h4>
+<div>
+    @Html.ActionLink("Create","Create","Person", new{ @class="btn btn-default"})
+</div>
+
+
+<div class="list-group">
+    @foreach (var item in @Model)
+{
+   
+    <div class="form-horizontal item list-group-item" style="max-width: 400px;">
+        <div style="display:none;">
+            <label>Id</label>
+            <div>@item.PersonId</div>
+        </div>
+        <div>
+            <label>FirstName</label>
+            <div>@item.FirstName</div>
+        </div>
+        <div>
+            <label>LastName</label>
+            <div>@item.LastName</div>
+        </div>
+        <div>
+            <label>MiddleName</label>
+            <div>@item.MiddleName</div>
+        </div>
+        
+        <div class="btn-group">
+            <div class="col-md-6 btn btn-default">
+                @Html.ActionLink("Update","Update","Person",new {id = @item.PersonId}, new{ @class=""})
+            </div>
+            <div class="col-md-6 btn btn-default">
+                @Html.ActionLink("Delete","Delete","Person",new {id = @item.PersonId}, new{ @class=""})
+            </div>
+        </div>
+        
+       
+
+    </div>
+    
+    
+}
+</div>

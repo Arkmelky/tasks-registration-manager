@@ -1,0 +1,63 @@
+﻿@using DataAccess.Models
+@model DataAccess.Models.Task
+
+@{
+    var selected = "";
+    ViewBag.Title = "Update";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Update</h2>
+@using (Html.BeginForm("Update", "Task"))
+{
+    <div>
+        <div class="form-group" style="display: none">
+            <label for="TaskId">TaskId:</label>
+            <input value="@Model.TaskId" name="TaskId" type="text" class="form-control" id="TaskId">
+        </div>
+        <div class="form-group">
+            <label for="Name">Name:</label>
+            <input value="@Model.Name" name="Name" type="text" class="form-control" id="Name" required="">
+        </div>
+        <div class="form-group">
+            <label for="Workload">Workload:</label>
+            <input value="@Model.Workload" name="Workload" type="text" class="form-control" id="Workload" required>
+        </div>
+        <div class="form-group">
+            <label for="StartDate">StartDate:</label>
+            <input value="@Model.StartDate" name="StartDate" type="" class="form-control" id="StartDate" placeholder="12.12.2016 0:00:00" required>
+        </div>
+        <div class="form-group">
+            <label for="EndDate">EndDate:</label>
+            <input value="@Model.EndDate" name="EndDate" type="" class="form-control" id="EndDate" placeholder="12.12.2016 0:00:00" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="TaskState">TaskState:</label>
+            <select size="1" name="TaskStateId" required>@Html.ViewBag.AllTaskStates
+                @foreach (var ts in Html.ViewBag.AllTaskStates)
+                {
+                    
+                    <option value="@ts.TaskStateId">@ts.Name</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="Person">Person:</label>
+            <select size="1" name="PersonId">
+                @{ selected = "";}
+                @foreach (var ts in (List<Person>)@Html.ViewBag.Persons)
+                {
+                    <option value="@ts.PersonId" >@ts.FirstName @ts.LastName</option>
+                }
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-default">Submit</button>
+    </div>
+
+}
+
+<div class="btn  left">
+    <div>@Html.ActionLink("Back","Index","Person")</div>
+</div>

@@ -1,0 +1,40 @@
+USE [tasks_registration_manager_db]
+GO
+
+/****** Object:  Table [dbo].[Tasks]    Script Date: 04.05.2016 9:13:50 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Tasks](
+	[TaskId] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](50) NOT NULL,
+	[Workload] [nvarchar](50) NOT NULL,
+	[StartDate] [date] NOT NULL,
+	[EndDate] [date] NOT NULL,
+	[TaskStateId] [int] NOT NULL,
+	[PersonId] [int] NULL,
+ CONSTRAINT [PK_Tasks] PRIMARY KEY CLUSTERED 
+(
+	[TaskId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[Tasks]  WITH CHECK ADD  CONSTRAINT [FK_Tasks_Persons] FOREIGN KEY([PersonId])
+REFERENCES [dbo].[Persons] ([PersonId])
+GO
+
+ALTER TABLE [dbo].[Tasks] CHECK CONSTRAINT [FK_Tasks_Persons]
+GO
+
+ALTER TABLE [dbo].[Tasks]  WITH CHECK ADD  CONSTRAINT [FK_Tasks_TaskStates] FOREIGN KEY([TaskStateId])
+REFERENCES [dbo].[TaskStates] ([TaskStateId])
+GO
+
+ALTER TABLE [dbo].[Tasks] CHECK CONSTRAINT [FK_Tasks_TaskStates]
+GO
+

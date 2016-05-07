@@ -1,0 +1,59 @@
+﻿@using DataAccess.Models
+@model DataAccess.Models.Task
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm("Create", "Task"))
+{
+    <div>
+        <div class="form-group" style="display: none">
+            <label for="TaskId">TaskId:</label>
+            <input name="TaskId" type="text" class="form-control" id="TaskId">
+        </div>
+        <div class="form-group">
+            <label for="Name">Name:</label>
+            <input name="Name" type="text" class="form-control" id="Name" required="">
+        </div>
+        <div class="form-group">
+            <label for="Workload">Workload:</label>
+            <input name="Workload" type="text" class="form-control" id="Workload" required>
+        </div>
+        <div class="form-group">
+            <label for="StartDate">StartDate:</label>
+            <input name="StartDate" type="" class="form-control" id="StartDate" required>
+        </div>
+        <div class="form-group">
+            <label for="EndDate">EndDate:</label>
+            <input name="EndDate" type="" class="form-control" id="EndDate" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="TaskState">TaskState:</label>
+            <select size="1" name="TaskStateId" required>
+                @foreach (var ts in (List<TaskState>)@Html.ViewBag.AllTaskStates)
+                {
+                    <option value="@ts.TaskStateId">@ts.Name</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="Person">Person:</label>
+            <select size="1" name="PersonId">
+                @foreach (var ts in (List<Person>)@Html.ViewBag.Persons)
+                {
+                    <option value="@ts.PersonId">@ts.FirstName @ts.LastName</option>
+                }
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-default">Submit</button>
+    </div>
+}
+<div class="btn  left">
+    <div>@Html.ActionLink("Back","Index","Person")</div>
+</div>

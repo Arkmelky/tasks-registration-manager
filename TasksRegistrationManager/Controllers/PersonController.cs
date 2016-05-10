@@ -13,12 +13,12 @@ namespace TasksRegistrationManager.Controllers
 {
     public class PersonController : Controller
     {
-        private DbConnectionManager manager;
+        private readonly IDbConnectionManager _manager;
 
-        public PersonController()
+        public PersonController(IDbConnectionManager dbConnectionManager)
         {
-            manager = new DbConnectionManager();
-            manager.Initialaize();
+            _manager = dbConnectionManager;
+            _manager.Initialaize();
         }
 
         //
@@ -29,9 +29,9 @@ namespace TasksRegistrationManager.Controllers
             var res = new List<Person>();
 
 
-            var sqlCmd = manager.CreateCommand();
+            var sqlCmd = _manager.CreateCommand();
             sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Person(), null);
-            manager.OpenConnection();
+            _manager.OpenConnection();
             using (DbDataReader dr = sqlCmd.ExecuteReader())
             {
                 while (dr.Read())
@@ -45,7 +45,7 @@ namespace TasksRegistrationManager.Controllers
                     });
                 }
             }
-            manager.CloseConnection();
+            _manager.CloseConnection();
 
 
             return View(res);
@@ -63,16 +63,16 @@ namespace TasksRegistrationManager.Controllers
             var res = new List<Person>();
 
 
-            var sqlCmd = manager.CreateCommand();
+            var sqlCmd = _manager.CreateCommand();
             sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Insert, person, null);
-            manager.OpenConnection();
+            _manager.OpenConnection();
             if (sqlCmd.ExecuteNonQuery()>0)
             {
-                manager.CloseConnection();
+                _manager.CloseConnection();
                 return RedirectToAction("Index", "Person");
             }
-            
-            manager.CloseConnection();
+
+            _manager.CloseConnection();
 
             return View();
         }
@@ -82,9 +82,9 @@ namespace TasksRegistrationManager.Controllers
         {
             Person person;
 
-            var sqlCmd = manager.CreateCommand();
+            var sqlCmd = _manager.CreateCommand();
             sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Person(), " WHERE PersonId="+id);
-            manager.OpenConnection();
+            _manager.OpenConnection();
             using (DbDataReader dr = sqlCmd.ExecuteReader())
             {
                 dr.Read();
@@ -97,7 +97,7 @@ namespace TasksRegistrationManager.Controllers
                     MiddleName = (string) dr["MiddleName"]
                 };
             }
-            manager.CloseConnection();
+            _manager.CloseConnection();
 
 
             return View(person);
@@ -106,16 +106,16 @@ namespace TasksRegistrationManager.Controllers
         [HttpPost]
         public ActionResult Update(Person person)
         {
-            var sqlCmd = manager.CreateCommand();
+            var sqlCmd = _manager.CreateCommand();
             sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Update, person,null);
-            manager.OpenConnection();
+            _manager.OpenConnection();
             if (sqlCmd.ExecuteNonQuery()>0)
             {
-                manager.CloseConnection();
+                _manager.CloseConnection();
                 return RedirectToAction("Index", "Person");
             }
-            
-            manager.CloseConnection();
+
+            _manager.CloseConnection();
 
 
             return View(person);
@@ -126,9 +126,9 @@ namespace TasksRegistrationManager.Controllers
         {
             Person person;
 
-            var sqlCmd = manager.CreateCommand();
+            var sqlCmd = _manager.CreateCommand();
             sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Person(), " WHERE PersonId=" + id);
-            manager.OpenConnection();
+            _manager.OpenConnection();
             using (DbDataReader dr = sqlCmd.ExecuteReader())
             {
                 dr.Read();
@@ -141,7 +141,7 @@ namespace TasksRegistrationManager.Controllers
                     MiddleName = (string)dr["MiddleName"]
                 };
             }
-            manager.CloseConnection();
+            _manager.CloseConnection();
 
             return View(person);
         }
@@ -149,18 +149,18 @@ namespace TasksRegistrationManager.Controllers
         [HttpPost]
         public ActionResult Delete(Person person)
         {
-            var sqlCmd = manager.CreateCommand();
+            var sqlCmd = _manager.CreateCommand();
             sqlCmd.CommandText = "DELETE FROM Tasks WHERE Tasks.PersonId = " + person.PersonId;
-            manager.OpenConnection();
+            _manager.OpenConnection();
             sqlCmd.ExecuteNonQuery();
             
             sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Delete, person, null);
             if (sqlCmd.ExecuteNonQuery() > 0)
             {
-                manager.CloseConnection();
+                _manager.CloseConnection();
                 return RedirectToAction("Index", "Person");
             }
-            manager.CloseConnection();
+            _manager.CloseConnection();
 
             return View(person);
         }

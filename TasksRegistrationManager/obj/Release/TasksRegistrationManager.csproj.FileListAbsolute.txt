@@ -31,3 +31,12 @@ G:\OOP\Training\TasksRegistrationManager\TasksRegistrationManager\bin\System.Web
 G:\OOP\Training\TasksRegistrationManager\TasksRegistrationManager\obj\Release\TasksRegistrationManager.csprojResolveAssemblyReference.cache
 G:\OOP\Training\TasksRegistrationManager\TasksRegistrationManager\obj\Release\TasksRegistrationManager.dll
 G:\OOP\Training\TasksRegistrationManager\TasksRegistrationManager\obj\Release\TasksRegistrationManager.pdb
+G:\OOP\Training\TasksRegistrationManager\TasksRegistrationManager\bin\Microsoft.Practices.ServiceLocation.dll
+G:\OOP\Training\TasksRegistrationManager\TasksRegistrationManager\bin\Microsoft.Practices.Unity.Configuration.dll
+G:\OOP\Training\TasksRegistrationManager\TasksRegistrationManager\bin\Microsoft.Practices.Unity.dll
+G:\OOP\Training\TasksRegistrationManager\TasksRegistrationManager\bin\Microsoft.Practices.Unity.RegistrationByConvention.dll
+G:\OOP\Training\TasksRegistrationManager\TasksRegistrationManager\bin\Microsoft.Practices.ServiceLocation.pdb
+G:\OOP\Training\TasksRegistrationManager\TasksRegistrationManager\bin\Microsoft.Practices.ServiceLocation.xml
+G:\OOP\Training\TasksRegistrationManager\TasksRegistrationManager\bin\Microsoft.Practices.Unity.xml
+G:\OOP\Training\TasksRegistrationManager\TasksRegistrationManager\bin\Microsoft.Practices.Unity.Configuration.xml
+G:\OOP\Training\TasksRegistrationManager\TasksRegistrationManager\bin\Microsoft.Practices.Unity.RegistrationByConvention.xml

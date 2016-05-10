@@ -14,12 +14,12 @@ namespace TasksRegistrationManager.Controllers
 {
     public class TaskController : Controller
     {
-        private DbConnectionManager manager;
+        private readonly IDbConnectionManager _manager;
 
-        public TaskController()
+        public TaskController(IDbConnectionManager dbConnectionManager)
         {
-            manager = new DbConnectionManager();
-            manager.Initialaize();
+            _manager = dbConnectionManager;
+            _manager.Initialaize();
         }
 
         public ActionResult Index()
@@ -28,9 +28,9 @@ namespace TasksRegistrationManager.Controllers
             var res = new List<TaskView>();
 
 
-            var sqlCmd = manager.CreateCommand();
+            var sqlCmd = _manager.CreateCommand();
             sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Task(), null);
-            manager.OpenConnection();
+            _manager.OpenConnection();
             using (DbDataReader dr = sqlCmd.ExecuteReader())
             {
                 while (dr.Read())
@@ -80,7 +80,7 @@ namespace TasksRegistrationManager.Controllers
                 }
 
             }
-            manager.CloseConnection();
+            _manager.CloseConnection();
 
             return View(res);
         }
@@ -91,9 +91,9 @@ namespace TasksRegistrationManager.Controllers
             var allTaskStates = new List<TaskState>();
 
 
-            var sqlCmd = manager.CreateCommand();
+            var sqlCmd = _manager.CreateCommand();
             sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new TaskState(), null);
-            manager.OpenConnection();
+            _manager.OpenConnection();
             using (DbDataReader dr = sqlCmd.ExecuteReader())
             {
                 while (dr.Read())
@@ -130,18 +130,18 @@ namespace TasksRegistrationManager.Controllers
         [HttpPost]
         public ActionResult Create(Task task)
         {
-            var sqlCmd = manager.CreateCommand();
+            var sqlCmd = _manager.CreateCommand();
             sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Insert, task, null);
-            manager.OpenConnection();
+            _manager.OpenConnection();
             if (sqlCmd.ExecuteNonQuery() > 0)
             {
-                manager.CloseConnection();
+                _manager.CloseConnection();
                 return RedirectToAction("Index", "Task");
             }
             
 
 
-            manager.CloseConnection();
+            _manager.CloseConnection();
 
             return View(task);
         }
@@ -152,9 +152,9 @@ namespace TasksRegistrationManager.Controllers
             var allPersons = new List<Person>();
             var allTaskStates = new List<TaskState>();
 
-            var sqlCmd = manager.CreateCommand();
+            var sqlCmd = _manager.CreateCommand();
             sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Task(), " WHERE TaskId=" + id);
-            manager.OpenConnection();
+            _manager.OpenConnection();
             using (DbDataReader dr = sqlCmd.ExecuteReader())
             {
                 dr.Read();
@@ -197,7 +197,7 @@ namespace TasksRegistrationManager.Controllers
                     });
                 }
             }
-            manager.CloseConnection();
+            _manager.CloseConnection();
 
             ViewBag.Persons = allPersons;
             ViewBag.AllTaskStates = allTaskStates;
@@ -208,16 +208,16 @@ namespace TasksRegistrationManager.Controllers
         [HttpPost]
         public ActionResult Update(Task task)
         {
-            var sqlCmd = manager.CreateCommand();
+            var sqlCmd = _manager.CreateCommand();
             sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Update, task, "WHERE TaskId="+task.TaskId);
-            manager.OpenConnection();
+            _manager.OpenConnection();
             if (sqlCmd.ExecuteNonQuery() > 0)
             {
-                manager.CloseConnection();
+                _manager.CloseConnection();
                 return RedirectToAction("Index", "Task");
             }
 
-            manager.CloseConnection();
+            _manager.CloseConnection();
 
 
             return View(task);
@@ -227,9 +227,9 @@ namespace TasksRegistrationManager.Controllers
         {
             TaskView task;
 
-            var sqlCmd = manager.CreateCommand();
+            var sqlCmd = _manager.CreateCommand();
             sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Task(), " WHERE TaskId=" + id);
-            manager.OpenConnection();
+            _manager.OpenConnection();
             using (DbDataReader dr = sqlCmd.ExecuteReader())
             {
                 dr.Read();
@@ -274,7 +274,7 @@ namespace TasksRegistrationManager.Controllers
                     };
                 }
             }
-            manager.CloseConnection();
+            _manager.CloseConnection();
 
             return View(task);
         }
@@ -282,15 +282,15 @@ namespace TasksRegistrationManager.Controllers
         [HttpPost]
         public ActionResult Delete(Task task)
         {
-            var sqlCmd = manager.CreateCommand();
+            var sqlCmd = _manager.CreateCommand();
             sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Delete, task, null);
-            manager.OpenConnection();
+            _manager.OpenConnection();
             if (sqlCmd.ExecuteNonQuery() > 0)
             {
-                manager.CloseConnection();
+                _manager.CloseConnection();
                 return RedirectToAction("Index", "Task");
             }
-            manager.CloseConnection();
+            _manager.CloseConnection();
 
             return View(task);
         }

@@ -12,9 +12,16 @@ using DataAccess.Models;
 
 namespace DataAccess.Connection
 {
-    
+    public interface IDbConnectionManager
+    {
+        void Initialaize();
+        DbConnection GetConnection();
+        DbCommand CreateCommand();
+        void OpenConnection();
+        void CloseConnection();
+    }
 
-    public class DbConnectionManager
+    public class DbConnectionManager:IDbConnectionManager
     {
         private DbProviderFactory _dbProviderFactory;
 

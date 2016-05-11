@@ -29,23 +29,35 @@ namespace TasksRegistrationManager.Controllers
             var res = new List<Person>();
 
 
-            var sqlCmd = _manager.CreateCommand();
-            sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Person(), null);
-            _manager.OpenConnection();
-            using (DbDataReader dr = sqlCmd.ExecuteReader())
+            try
             {
-                while (dr.Read())
+                var sqlCmd = _manager.CreateCommand();
+                sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Person(), null);
+                _manager.OpenConnection();
+                using (DbDataReader dr = sqlCmd.ExecuteReader())
                 {
-                    res.Add(new Person
+                    while (dr.Read())
                     {
-                        PersonId = (int)dr["PersonId"],
-                        FirstName = (string)dr["FirstName"],
-                        LastName = (string)dr["LastName"],
-                        MiddleName = (string)dr["MiddleName"]
-                    });
+                        res.Add(new Person
+                        {
+                            PersonId = (int)dr["PersonId"],
+                            FirstName = (string)dr["FirstName"],
+                            LastName = (string)dr["LastName"],
+                            MiddleName = (string)dr["MiddleName"]
+                        });
+                    }
                 }
             }
-            _manager.CloseConnection();
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            finally
+            {
+                _manager.CloseConnection();
+            }
+            
 
 
             return View(res);
@@ -59,20 +71,26 @@ namespace TasksRegistrationManager.Controllers
         [HttpPost]
         public ActionResult Create(Person person)
         {
+            try
+            {
+                var sqlCmd = _manager.CreateCommand();
+                sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Insert, person, null);
+                _manager.OpenConnection();
+                if (sqlCmd.ExecuteNonQuery() > 0)
+                {
+                    _manager.CloseConnection();
+                    return RedirectToAction("Index", "Person");
+                }
+            }
+            catch (Exception ex)
+            {
 
-            var res = new List<Person>();
-
-
-            var sqlCmd = _manager.CreateCommand();
-            sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Insert, person, null);
-            _manager.OpenConnection();
-            if (sqlCmd.ExecuteNonQuery()>0)
+                throw;
+            }
+            finally
             {
                 _manager.CloseConnection();
-                return RedirectToAction("Index", "Person");
             }
-
-            _manager.CloseConnection();
 
             return View();
         }
@@ -82,22 +100,34 @@ namespace TasksRegistrationManager.Controllers
         {
             Person person;
 
-            var sqlCmd = _manager.CreateCommand();
-            sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Person(), " WHERE PersonId="+id);
-            _manager.OpenConnection();
-            using (DbDataReader dr = sqlCmd.ExecuteReader())
+            try
             {
-                dr.Read();
-
-                person = new Person
+                var sqlCmd = _manager.CreateCommand();
+                sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Person(), " WHERE PersonId=" + id);
+                _manager.OpenConnection();
+                using (DbDataReader dr = sqlCmd.ExecuteReader())
                 {
-                    PersonId = (int) dr["PersonId"],
-                    FirstName = (string) dr["FirstName"],
-                    LastName = (string) dr["LastName"],
-                    MiddleName = (string) dr["MiddleName"]
-                };
+                    dr.Read();
+
+                    person = new Person
+                    {
+                        PersonId = (int)dr["PersonId"],
+                        FirstName = (string)dr["FirstName"],
+                        LastName = (string)dr["LastName"],
+                        MiddleName = (string)dr["MiddleName"]
+                    };
+                }
             }
-            _manager.CloseConnection();
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            finally
+            {
+                _manager.CloseConnection();
+            }
+            
 
 
             return View(person);
@@ -106,17 +136,26 @@ namespace TasksRegistrationManager.Controllers
         [HttpPost]
         public ActionResult Update(Person person)
         {
-            var sqlCmd = _manager.CreateCommand();
-            sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Update, person,null);
-            _manager.OpenConnection();
-            if (sqlCmd.ExecuteNonQuery()>0)
+            try
+            {
+                var sqlCmd = _manager.CreateCommand();
+                sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Update, person, null);
+                _manager.OpenConnection();
+                if (sqlCmd.ExecuteNonQuery() > 0)
+                {
+                    _manager.CloseConnection();
+                    return RedirectToAction("Index", "Person");
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
             {
                 _manager.CloseConnection();
-                return RedirectToAction("Index", "Person");
             }
-
-            _manager.CloseConnection();
-
 
             return View(person);
         }
@@ -126,22 +165,34 @@ namespace TasksRegistrationManager.Controllers
         {
             Person person;
 
-            var sqlCmd = _manager.CreateCommand();
-            sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Person(), " WHERE PersonId=" + id);
-            _manager.OpenConnection();
-            using (DbDataReader dr = sqlCmd.ExecuteReader())
+            try
             {
-                dr.Read();
-
-                person = new Person
+                var sqlCmd = _manager.CreateCommand();
+                sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Person(), " WHERE PersonId=" + id);
+                _manager.OpenConnection();
+                using (DbDataReader dr = sqlCmd.ExecuteReader())
                 {
-                    PersonId = (int)dr["PersonId"],
-                    FirstName = (string)dr["FirstName"],
-                    LastName = (string)dr["LastName"],
-                    MiddleName = (string)dr["MiddleName"]
-                };
+                    dr.Read();
+
+                    person = new Person
+                    {
+                        PersonId = (int)dr["PersonId"],
+                        FirstName = (string)dr["FirstName"],
+                        LastName = (string)dr["LastName"],
+                        MiddleName = (string)dr["MiddleName"]
+                    };
+                }
             }
-            _manager.CloseConnection();
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                _manager.CloseConnection();
+            }
+            
 
             return View(person);
         }
@@ -149,19 +200,29 @@ namespace TasksRegistrationManager.Controllers
         [HttpPost]
         public ActionResult Delete(Person person)
         {
-            var sqlCmd = _manager.CreateCommand();
-            sqlCmd.CommandText = "DELETE FROM Tasks WHERE Tasks.PersonId = " + person.PersonId;
-            _manager.OpenConnection();
-            sqlCmd.ExecuteNonQuery();
-            
-            sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Delete, person, null);
-            if (sqlCmd.ExecuteNonQuery() > 0)
+            try
+            {
+                var sqlCmd = _manager.CreateCommand();
+                _manager.OpenConnection();
+                //sqlCmd.CommandText = "DELETE FROM Tasks WHERE Tasks.PersonId = " + person.PersonId;
+                //sqlCmd.ExecuteNonQuery();
+
+                sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Delete, person, null);
+                if (sqlCmd.ExecuteNonQuery() > 0)
+                {
+                    _manager.CloseConnection();
+                    return RedirectToAction("Index", "Person");
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
             {
                 _manager.CloseConnection();
-                return RedirectToAction("Index", "Person");
             }
-            _manager.CloseConnection();
-
             return View(person);
         }
 

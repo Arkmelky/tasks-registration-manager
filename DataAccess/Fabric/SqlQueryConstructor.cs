@@ -13,6 +13,7 @@ namespace DataAccess.Fabric
     {
         Insert,
         Delete,
+        CascadeDelPart,
         Update,
         Select
 

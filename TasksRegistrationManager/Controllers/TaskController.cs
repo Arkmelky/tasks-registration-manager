@@ -24,63 +24,75 @@ namespace TasksRegistrationManager.Controllers
 
         public ActionResult Index()
         {
-
             var res = new List<TaskView>();
 
+            try
+            {
+                
 
-            var sqlCmd = _manager.CreateCommand();
-            sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Task(), null);
-            _manager.OpenConnection();
-            using (DbDataReader dr = sqlCmd.ExecuteReader())
-            {
-                while (dr.Read())
-                {
-                    res.Add(new TaskView
-                    {
-                        TaskId = (int)dr["TaskId"],
-                        Name = (string)dr["Name"],
-                        Workload = (string)dr["Workload"],
-                        StartDate = (DateTime)dr["StartDate"],
-                        EndDate = (DateTime)dr["EndDate"],
-                        TaskStateId = (int)dr["TaskStateId"],
-                        PersonId = (int)dr["PersonId"]
-                    });
-                }
-            }
-            foreach (var item in res)
-            {
-                sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new TaskState(),
-                    "WHERE TaskStateId=" + item.TaskStateId);
+
+                var sqlCmd = _manager.CreateCommand();
+                sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Task(), null);
+                _manager.OpenConnection();
                 using (DbDataReader dr = sqlCmd.ExecuteReader())
                 {
                     while (dr.Read())
                     {
-                        item.State = new TaskState
+                        res.Add(new TaskView
                         {
-                            TaskStateId = (int)dr["TaskStateId"],
-                            Name = (string)dr["Name"]
-                        };
+                            TaskId = (int) dr["TaskId"],
+                            Name = (string) dr["Name"],
+                            Workload = (string) dr["Workload"],
+                            StartDate = (DateTime) dr["StartDate"],
+                            EndDate = (DateTime) dr["EndDate"],
+                            TaskStateId = (int) dr["TaskStateId"],
+                            PersonId = (int) dr["PersonId"]
+                        });
                     }
                 }
-
-                sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Person(),
-                    "WHERE PersonId=" + item.PersonId);
-                using (DbDataReader dr = sqlCmd.ExecuteReader())
+                foreach (var item in res)
                 {
-                    while (dr.Read())
+                    sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new TaskState(),
+                        "WHERE TaskStateId=" + item.TaskStateId);
+                    using (DbDataReader dr = sqlCmd.ExecuteReader())
                     {
-                        item.Person = new Person
+                        while (dr.Read())
                         {
-                            PersonId = (int)dr["PersonId"],
-                            FirstName = (string)dr["FirstName"],
-                            LastName = (string)dr["LastName"],
-                            MiddleName = (string)dr["MiddleName"]
-                        };
+                            item.State = new TaskState
+                            {
+                                TaskStateId = (int) dr["TaskStateId"],
+                                Name = (string) dr["Name"]
+                            };
+                        }
                     }
-                }
 
+                    sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Person(),
+                        "WHERE PersonId=" + item.PersonId);
+                    using (DbDataReader dr = sqlCmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            item.Person = new Person
+                            {
+                                PersonId = (int) dr["PersonId"],
+                                FirstName = (string) dr["FirstName"],
+                                LastName = (string) dr["LastName"],
+                                MiddleName = (string) dr["MiddleName"]
+                            };
+                        }
+                    }
+
+                }
             }
-            _manager.CloseConnection();
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            finally
+            {
+                _manager.CloseConnection();
+            }
 
             return View(res);
         }
@@ -91,38 +103,50 @@ namespace TasksRegistrationManager.Controllers
             var allTaskStates = new List<TaskState>();
 
 
-            var sqlCmd = _manager.CreateCommand();
-            sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new TaskState(), null);
-            _manager.OpenConnection();
-            using (DbDataReader dr = sqlCmd.ExecuteReader())
+            try
             {
-                while (dr.Read())
+                var sqlCmd = _manager.CreateCommand();
+                sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new TaskState(), null);
+                _manager.OpenConnection();
+                using (DbDataReader dr = sqlCmd.ExecuteReader())
                 {
-                    allTaskStates.Add(new TaskState
+                    while (dr.Read())
                     {
-                        TaskStateId = (int)dr["TaskStateId"],
-                        Name = (string)dr["Name"]
-                    });
+                        allTaskStates.Add(new TaskState
+                        {
+                            TaskStateId = (int) dr["TaskStateId"],
+                            Name = (string) dr["Name"]
+                        });
+                    }
                 }
-            }
 
-            sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Person(), null);
-            using (DbDataReader dr = sqlCmd.ExecuteReader())
+                sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Person(), null);
+                using (DbDataReader dr = sqlCmd.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        allPersons.Add(new Person
+                        {
+                            PersonId = (int) dr["PersonId"],
+                            FirstName = (string) dr["FirstName"],
+                            LastName = (string) dr["LastName"],
+                            MiddleName = (string) dr["MiddleName"]
+                        });
+                    }
+                }
+
+                ViewBag.Persons = allPersons;
+                ViewBag.AllTaskStates = allTaskStates;
+            }
+            catch (Exception ex)
             {
-                while (dr.Read())
-                {
-                    allPersons.Add(new Person
-                    {
-                        PersonId = (int)dr["PersonId"],
-                        FirstName = (string)dr["FirstName"],
-                        LastName = (string)dr["LastName"],
-                        MiddleName = (string)dr["MiddleName"]
-                    });
-                }
-            }
 
-            ViewBag.Persons = allPersons;
-            ViewBag.AllTaskStates = allTaskStates;
+                throw;
+            }
+            finally
+            {
+                _manager.CloseConnection();
+            }
 
             return View();
         }
@@ -130,18 +154,27 @@ namespace TasksRegistrationManager.Controllers
         [HttpPost]
         public ActionResult Create(Task task)
         {
-            var sqlCmd = _manager.CreateCommand();
-            sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Insert, task, null);
-            _manager.OpenConnection();
-            if (sqlCmd.ExecuteNonQuery() > 0)
+            try
+            {
+                var sqlCmd = _manager.CreateCommand();
+                sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Insert, task, null);
+                _manager.OpenConnection();
+                if (sqlCmd.ExecuteNonQuery() > 0)
+                {
+                    _manager.CloseConnection();
+                    return RedirectToAction("Index", "Task");
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            finally
             {
                 _manager.CloseConnection();
-                return RedirectToAction("Index", "Task");
             }
             
-
-
-            _manager.CloseConnection();
 
             return View(task);
         }
@@ -152,52 +185,65 @@ namespace TasksRegistrationManager.Controllers
             var allPersons = new List<Person>();
             var allTaskStates = new List<TaskState>();
 
-            var sqlCmd = _manager.CreateCommand();
-            sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Task(), " WHERE TaskId=" + id);
-            _manager.OpenConnection();
-            using (DbDataReader dr = sqlCmd.ExecuteReader())
+            try
             {
-                dr.Read();
+                var sqlCmd = _manager.CreateCommand();
+                sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Task(),
+                    " WHERE TaskId=" + id);
+                _manager.OpenConnection();
+                using (DbDataReader dr = sqlCmd.ExecuteReader())
+                {
+                    dr.Read();
 
-                task = new Task
-                {
-                    TaskId = (int)dr["TaskId"],
-                    Name = (string)dr["Name"],
-                    Workload = (string)dr["Workload"],
-                    StartDate = (DateTime)dr["StartDate"],
-                    EndDate = (DateTime)dr["EndDate"],
-                    TaskStateId = (int)dr["TaskStateId"],
-                    PersonId = (int)dr["PersonId"]
-                };
-            }
-            sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new TaskState(), null);
-            using (DbDataReader dr = sqlCmd.ExecuteReader())
-            {
-                while (dr.Read())
-                {
-                    allTaskStates.Add(new TaskState
+                    task = new Task
                     {
-                        TaskStateId = (int)dr["TaskStateId"],
-                        Name = (string)dr["Name"]
-                    });
+                        TaskId = (int) dr["TaskId"],
+                        Name = (string) dr["Name"],
+                        Workload = (string) dr["Workload"],
+                        StartDate = (DateTime) dr["StartDate"],
+                        EndDate = (DateTime) dr["EndDate"],
+                        TaskStateId = (int) dr["TaskStateId"],
+                        PersonId = (int) dr["PersonId"]
+                    };
+                }
+                sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new TaskState(), null);
+                using (DbDataReader dr = sqlCmd.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        allTaskStates.Add(new TaskState
+                        {
+                            TaskStateId = (int) dr["TaskStateId"],
+                            Name = (string) dr["Name"]
+                        });
+                    }
+                }
+
+                sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Person(), null);
+                using (DbDataReader dr = sqlCmd.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        allPersons.Add(new Person
+                        {
+                            PersonId = (int) dr["PersonId"],
+                            FirstName = (string) dr["FirstName"],
+                            LastName = (string) dr["LastName"],
+                            MiddleName = (string) dr["MiddleName"]
+                        });
+                    }
                 }
             }
-
-            sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Person(), null);
-            using (DbDataReader dr = sqlCmd.ExecuteReader())
+            catch (Exception)
             {
-                while (dr.Read())
-                {
-                    allPersons.Add(new Person
-                    {
-                        PersonId = (int)dr["PersonId"],
-                        FirstName = (string)dr["FirstName"],
-                        LastName = (string)dr["LastName"],
-                        MiddleName = (string)dr["MiddleName"]
-                    });
-                }
+
+                throw;
             }
-            _manager.CloseConnection();
+            finally
+            {
+                _manager.CloseConnection();
+            }
+            
 
             ViewBag.Persons = allPersons;
             ViewBag.AllTaskStates = allTaskStates;
@@ -208,17 +254,27 @@ namespace TasksRegistrationManager.Controllers
         [HttpPost]
         public ActionResult Update(Task task)
         {
-            var sqlCmd = _manager.CreateCommand();
-            sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Update, task, "WHERE TaskId="+task.TaskId);
-            _manager.OpenConnection();
-            if (sqlCmd.ExecuteNonQuery() > 0)
+            try
+            {
+                var sqlCmd = _manager.CreateCommand();
+                sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Update, task,
+                    "WHERE TaskId=" + task.TaskId);
+                _manager.OpenConnection();
+                if (sqlCmd.ExecuteNonQuery() > 0)
+                {
+                    _manager.CloseConnection();
+                    return RedirectToAction("Index", "Task");
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            finally
             {
                 _manager.CloseConnection();
-                return RedirectToAction("Index", "Task");
             }
-
-            _manager.CloseConnection();
-
 
             return View(task);
         }
@@ -227,54 +283,66 @@ namespace TasksRegistrationManager.Controllers
         {
             TaskView task;
 
-            var sqlCmd = _manager.CreateCommand();
-            sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Task(), " WHERE TaskId=" + id);
-            _manager.OpenConnection();
-            using (DbDataReader dr = sqlCmd.ExecuteReader())
+            try
             {
-                dr.Read();
+                var sqlCmd = _manager.CreateCommand();
+                sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Task(), " WHERE TaskId=" + id);
+                _manager.OpenConnection();
+                using (DbDataReader dr = sqlCmd.ExecuteReader())
+                {
+                    dr.Read();
 
-                task = new TaskView
-                {
-                    TaskId = (int)dr["TaskId"],
-                    Name = (string)dr["Name"],
-                    Workload = (string)dr["Workload"],
-                    StartDate = (DateTime)dr["StartDate"],
-                    EndDate = (DateTime)dr["EndDate"],
-                    TaskStateId = (int)dr["TaskStateId"],
-                    PersonId = (int)dr["PersonId"]
-                };
-            }
-            sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new TaskState(),
-                    "WHERE TaskStateId=" + task.TaskStateId);
-            using (DbDataReader dr = sqlCmd.ExecuteReader())
-            {
-                while (dr.Read())
-                {
-                    task.State = new TaskState
+                    task = new TaskView
                     {
+                        TaskId = (int)dr["TaskId"],
+                        Name = (string)dr["Name"],
+                        Workload = (string)dr["Workload"],
+                        StartDate = (DateTime)dr["StartDate"],
+                        EndDate = (DateTime)dr["EndDate"],
                         TaskStateId = (int)dr["TaskStateId"],
-                        Name = (string)dr["Name"]
+                        PersonId = (int)dr["PersonId"]
                     };
                 }
-            }
-
-            sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Person(),
-                "WHERE PersonId=" + task.PersonId);
-            using (DbDataReader dr = sqlCmd.ExecuteReader())
-            {
-                while (dr.Read())
+                sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new TaskState(),
+                        "WHERE TaskStateId=" + task.TaskStateId);
+                using (DbDataReader dr = sqlCmd.ExecuteReader())
                 {
-                    task.Person = new Person
+                    while (dr.Read())
                     {
-                        PersonId = (int)dr["PersonId"],
-                        FirstName = (string)dr["FirstName"],
-                        LastName = (string)dr["LastName"],
-                        MiddleName = (string)dr["MiddleName"]
-                    };
+                        task.State = new TaskState
+                        {
+                            TaskStateId = (int)dr["TaskStateId"],
+                            Name = (string)dr["Name"]
+                        };
+                    }
+                }
+
+                sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Select, new Person(),
+                    "WHERE PersonId=" + task.PersonId);
+                using (DbDataReader dr = sqlCmd.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        task.Person = new Person
+                        {
+                            PersonId = (int)dr["PersonId"],
+                            FirstName = (string)dr["FirstName"],
+                            LastName = (string)dr["LastName"],
+                            MiddleName = (string)dr["MiddleName"]
+                        };
+                    }
                 }
             }
-            _manager.CloseConnection();
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            finally
+            {
+                _manager.CloseConnection();
+            }
+            
 
             return View(task);
         }
@@ -282,15 +350,26 @@ namespace TasksRegistrationManager.Controllers
         [HttpPost]
         public ActionResult Delete(Task task)
         {
-            var sqlCmd = _manager.CreateCommand();
-            sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Delete, task, null);
-            _manager.OpenConnection();
-            if (sqlCmd.ExecuteNonQuery() > 0)
+            try
+            {
+                var sqlCmd = _manager.CreateCommand();
+                sqlCmd.CommandText = SqlQueryBuilder.PrepareSqlQuery(EntityQueryType.Delete, task, null);
+                _manager.OpenConnection();
+                if (sqlCmd.ExecuteNonQuery() > 0)
+                {
+                    _manager.CloseConnection();
+                    return RedirectToAction("Index", "Task");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
             {
                 _manager.CloseConnection();
-                return RedirectToAction("Index", "Task");
             }
-            _manager.CloseConnection();
+            
 
             return View(task);
         }
